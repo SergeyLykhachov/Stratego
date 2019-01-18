@@ -85,7 +85,6 @@ public class StrategoneGame {
 							setAdversaryToMove(
 								getAdversaryToMove().getOpponent()
 							);
-							/////////////////////////////////////////////////////////////////////
 							int result = JOptionPane.showConfirmDialog(
 								null,
 								"Computer player won.\nStart new game?",
@@ -98,7 +97,6 @@ public class StrategoneGame {
 									this.getStrategoneGameView()
 								);
 							}
-							/////////////////////////////////////////////////////////////////////
 							return;
 						}
 						setAdversaryToMove(
