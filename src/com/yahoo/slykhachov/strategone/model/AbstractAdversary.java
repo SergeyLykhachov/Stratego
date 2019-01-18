@@ -14,7 +14,7 @@ abstract class AbstractAdversary implements IAdversary {
 	protected AbstractAdversary() {
 		pieces = new IPieceModel[0];
 	}
-	protected AbstractAdversary(IAdversary adversaryToCopy) {
+	public AbstractAdversary(IAdversary adversaryToCopy) {
 		IPieceModel[] originalPieces = adversaryToCopy.getPieces();
 		IPieceModel[] copyPieces = new IPieceModel[originalPieces.length];
 		for (int i = 0; i < copyPieces.length; i++) {

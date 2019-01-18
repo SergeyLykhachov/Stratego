@@ -59,6 +59,20 @@ public class BoardModel {
 	public boolean isSafeToUndoTwoMoves() {
 		return this.stack.size() >= 2;
 	}
+	public Class<? extends IAdversary> getLastMoveAdversary() {
+		if (this.stack.size() > 0) {
+			if (this.stack.peek()
+					.getMove()
+					.getPiece()
+					.getAdversary()
+					.equals(Red.class)) {
+				return Red.class;
+			} else {
+				return Blue.class;
+			}
+		}
+		return null;
+	}
 	public void performMove(Move move) {
 		int finRow = move.getFinalRow();
 		int finCol = move.getFinalColumn();
@@ -240,13 +254,13 @@ public class BoardModel {
 			this.movingPiece = movingPiece;
 			this.onDefencePiece = onDefencePiece;
 		}
-		Move getMove() {
+		private Move getMove() {
 			return this.move;
 		}
-		IPieceModel getMovingPiece() {
+		private IPieceModel getMovingPiece() {
 			return this.movingPiece;
 		}
-		IPieceModel getOnDefencePiece() {
+		private IPieceModel getOnDefencePiece() {
 			return this.onDefencePiece;
 		}
 	}

@@ -113,10 +113,15 @@ public class StrategoneGameView extends JPanel {
 				sgv -> sgv.getStrategoneGame().getComputerAdversary() !=
 					sgv.getStrategoneGame().getAdversaryToMove(),
 				brdMdl -> {
-					if (brdMdl.isSafeToUndoTwoMoves()) {
+					if (Blue.class.equals(brdMdl.getLastMoveAdversary())) {
 						brdMdl.undoMove();
 						brdMdl.undoMove();
 						getBoardView().updateBoardView();
+					} else {
+						if (Red.class.equals(brdMdl.getLastMoveAdversary())) {
+							brdMdl.undoMove();
+							getBoardView().updateBoardView();
+						}
 					}
 				},
 				jtb -> {
@@ -130,19 +135,26 @@ public class StrategoneGameView extends JPanel {
 		);
 		JPanel panel3 = new JPanel();
 		panel3.add(gameView);
-		panel2.add(panel3);
+		panel2.add(panel3, BorderLayout.CENTER);
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		JPanel p = new JPanel();
+		p.setPreferredSize(new Dimension(200, (int) gameView.getPreferredSize().getHeight()));
+		panel2.add(p, BorderLayout.EAST);
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		this.setupView = new GameSetupView(
 			this,
 			cardLayout,
 			gameView.getPreferredSize()
 		);
 		JPanel panel4 = new JPanel();
+		panel4.setBackground(Color.ORANGE);
 		panel4.add(setupView);
 		BoarderedBoardView singlePlayerGameView = new BoarderedBoardView(
 			getStrategoneGame().getBoard()
 				.getSingleUserBoardView()
 		);
 		JPanel panel5 = new JPanel();
+		panel5.setBackground(Color.ORANGE);
 		panel5.setLayout(new BorderLayout());
 		panel5.add(
 			createToolBar(
@@ -166,7 +178,12 @@ public class StrategoneGameView extends JPanel {
 		);
 		JPanel panel6 = new JPanel();
 		panel6.add(singlePlayerGameView);
-		panel5.add(panel6);
+		panel5.add(panel6, BorderLayout.CENTER);
+		/////////////////////////////////////////
+		JPanel panel10 = new JPanel();
+		panel10.setPreferredSize(new Dimension(200, (int) gameView.getPreferredSize().getHeight()));
+		panel5.add(panel10, BorderLayout.EAST);
+		/////////////////////////////////////////
 		this.add(panel4, "1");
 		this.add(panel2, "2");
 		this.add(panel5, "3");
@@ -184,7 +201,7 @@ public class StrategoneGameView extends JPanel {
 	public void setBluePlayerActivePiecesLabel(String text) {
 		bluePlayerActivePieces.setText(text);
 	}
-	private JToolBar createToolBar(CardLayout cardLayout, StrategoneGameView sgv,
+	private static JToolBar createToolBar(CardLayout cardLayout, StrategoneGameView sgv,
 			Predicate<StrategoneGameView> predicate, Consumer<BoardModel> consumer1,
 			Consumer<JToolBar> consumer2, Consumer<JToolBar> consumer3) {
 		JToolBar jtb = new JToolBar();
@@ -197,7 +214,7 @@ public class StrategoneGameView extends JPanel {
 		undoButton.addActionListener(
 			ae -> {
 				if (predicate.test(sgv)) {
-					BoardModel bm = getStrategoneGame()
+					BoardModel bm = sgv.getStrategoneGame()
 						.getStrategoneGameModel()
 						.getBoardModel();
 					consumer1.accept(bm);
@@ -218,19 +235,8 @@ public class StrategoneGameView extends JPanel {
 				ruleFrame.setVisible(true);
 		});
 		restartButton.addActionListener(
-			ae -> {
-				this.setupView.setUpPieceModels(new IPieceModel[10][4]);
-				this.setupView.initViewPanels();
-				this.getStrategoneGame()
-					.getBoard()
-					.getBoardModel()
-					.clearBoard();
-				this.getStrategoneGame()
-					.getBoard()
-					.getBoardModel()
-					.clearStack();
-				cardLayout.show(this, "1");
-		});
+			ae -> restart(cardLayout, sgv)
+		);
 		consumer2.accept(jtb);
 		jtb.add(helpButton);
 		jtb.add(restartButton);
@@ -238,10 +244,24 @@ public class StrategoneGameView extends JPanel {
 		consumer3.accept(jtb);
 		return jtb;
 	}
+	public static void restart(CardLayout cardLayout, StrategoneGameView sgv) {
+		sgv.setupView.setUpPieceModels(new IPieceModel[10][4]);
+		sgv.setupView.initViewPanels();
+		sgv.getStrategoneGame()
+			.getBoard()
+			.getBoardModel()
+			.clearBoard();
+		sgv.getStrategoneGame()
+			.getBoard()
+			.getBoardModel()
+			.clearStack();
+		cardLayout.show(sgv, "1");
+	}
 	public StrategoneGame getStrategoneGame() {
 		return this.strategoneGame;
 	}
-	private static class GameSetupView extends JPanel implements MouseMotionListener, MouseListener {
+	private static class GameSetupView extends JPanel
+			implements MouseMotionListener, MouseListener {
 		private static final long serialVersionUID = 1L;
 		private PiecePanelView flagViewPanel;
 		private PiecePanelView bombViewPanel;
@@ -278,13 +298,13 @@ public class StrategoneGameView extends JPanel {
 			this.initViewPanels();
 			trainingButton.addActionListener(
 				ae -> {
-					gameView.strategoneGame.getRedPlayer()
+					gameView.getStrategoneGame().getRedPlayer()
 							.setPieces(
-								hardCodedRedPieceModels()	
+								hardCodedRedPieceModelsFactory()	
 					);
-					gameView.strategoneGame.getBluePlayer()
+					gameView.getStrategoneGame().getBluePlayer()
 							.setPieces(
-								hardCodedBluePieceModels()
+								hardCodedBluePieceModelsFactory()
 						);
 					gameView.getStrategoneGame()
 							.getBoard()
@@ -314,13 +334,11 @@ public class StrategoneGameView extends JPanel {
 						.filter(e -> e != null)
 						.count();
 					if (pieceCount == 40) {	
-						gameView.strategoneGame.getRedPlayer()
+						gameView.getStrategoneGame().getRedPlayer()
+							.setPieces(humanPlayerPieces);
+						gameView.getStrategoneGame().getBluePlayer()
 							.setPieces(
-								humanPlayerPieces
-						);
-						gameView.strategoneGame.getBluePlayer()
-							.setPieces(
-								hardCodedBluePieceModels()
+								hardCodedBluePieceModelsFactory()
 						);
 						gameView.getStrategoneGame()
 							.getBoard()
@@ -342,7 +360,7 @@ public class StrategoneGameView extends JPanel {
 					}
 			});
 		}
-		private static IPieceModel[] hardCodedRedPieceModels() {
+		private static IPieceModel[] hardCodedRedPieceModelsFactory() {
 			return new IPieceModel[] {
 				new Flag(9, 1, Red.class),
 				new Bomb(6, 1, Red.class),
@@ -386,9 +404,10 @@ public class StrategoneGameView extends JPanel {
 				new Spy(7, 3, Red.class)
 			};
 		}
-		private static IPieceModel[] hardCodedBluePieceModels() {
+		private static IPieceModel[] hardCodedBluePieceModelsFactory() {
 			return new IPieceModel[] {
 				new Flag(0, 8, Blue.class),
+				//new Flag(3, 4, Blue.class),
 				new Bomb(3, 8, Blue.class),
 				new Bomb(3, 0, Blue.class),
 				new Bomb(2, 9, Blue.class),
@@ -421,6 +440,7 @@ public class StrategoneGameView extends JPanel {
 				new Miner(0, 0, Blue.class),
 				new Scout(3, 5, Blue.class),
 				new Scout(3, 4, Blue.class),
+				//new Scout(0, 8, Blue.class),
 				new Scout(3, 1, Blue.class),
 				new Scout(2, 7, Blue.class),
 				new Scout(2, 0, Blue.class),

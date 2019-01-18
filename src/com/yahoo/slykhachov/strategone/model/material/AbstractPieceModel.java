@@ -10,7 +10,7 @@ abstract class AbstractPieceModel implements IPieceModel {
 	private boolean isCaptured;
 	private int rank;
 	private final Class<? extends IAdversary> adversary;
-	protected AbstractPieceModel(int row, int col,
+	public AbstractPieceModel(int row, int col,
 			Class<? extends IAdversary> adversary, int rank) {
 		this.isCaptured = false;
 		this.adversary = adversary;

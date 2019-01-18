@@ -301,20 +301,22 @@ public class BoardView extends JPanel {
 		private IPieceModel pieceModel;
 		@Override
 		public void mousePressed(MouseEvent me)	{
-			if (me.getButton() == MouseEvent.BUTTON1) {
-				double x = me.getX();
-				double y = me.getY();
-				int row = (int) ((y / getPreferredSize().getWidth()) * 10);
-				int col = (int) ((x / getPreferredSize().getHeight()) * 10);
-				this.pieceModel = getIfCorrectTurnAdversary(getStrategoneGame().getAdversaryToMove(), row, col);
-				if (pieceModel != null) {
-					actedUponPieceView = views.remove(String.valueOf(row) + String.valueOf(col));
-					actedUponPieceView.getPoint()
-						.setLocation(
+			if (!getStrategoneGame().isGameOver()) {
+				if (me.getButton() == MouseEvent.BUTTON1) {
+					double x = me.getX();
+					double y = me.getY();
+					int row = (int) ((y / getPreferredSize().getWidth()) * 10);
+					int col = (int) ((x / getPreferredSize().getHeight()) * 10);
+					this.pieceModel = getIfCorrectTurnAdversary(getStrategoneGame().getAdversaryToMove(), row, col);
+					if (pieceModel != null) {
+						actedUponPieceView = views.remove(String.valueOf(row) + String.valueOf(col));
+						actedUponPieceView.getPoint()
+							.setLocation(
 								x - getPreferredSize().getWidth() / 20,
 								y - getPreferredSize().getHeight() / 20
-					);
-					repaint();
+						);
+						repaint();
+					}
 				}
 			}
 		}

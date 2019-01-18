@@ -2,6 +2,7 @@ package com.yahoo.slykhachov.strategone;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import javax.swing.JOptionPane;
 import com.yahoo.slykhachov.strategone.ai.Best;
 import com.yahoo.slykhachov.strategone.ai.MoveChooser;
 import com.yahoo.slykhachov.strategone.model.StrategoneGameModel;
@@ -32,20 +33,30 @@ public class StrategoneGame {
 	    this.setComputerAdversary(bluePlayer);
 	}
 	public void doResponce() {
-		if (isGameOver(getBoard())) {
+		if (isGameOver()) {
+			String side;
 			if (getBluePlayer().hasLost(getBoard().getBoardModel())) {
-				System.out.println("Human player won");
-				setAdversaryToMove(
-					getAdversaryToMove().getOpponent()
-				);
-				return;
+				side = "You";
 			} else {
-				System.out.println("Computer player won");
-				setAdversaryToMove(
-					getAdversaryToMove().getOpponent()
-				);
-				return;
+				side = "Computer player";
 			}
+			System.out.println(side + " won");
+			setAdversaryToMove(
+				getAdversaryToMove().getOpponent()
+			);
+			int result = JOptionPane.showConfirmDialog(
+				null,
+				side + " won.\nStart new game?",
+				"Select an option",
+				JOptionPane.OK_CANCEL_OPTION
+			);
+			if (result == JOptionPane.OK_OPTION) {
+				StrategoneGameView.restart(
+					(java.awt.CardLayout) this.getStrategoneGameView().getLayout(),
+					this.getStrategoneGameView()
+				);
+			}
+			return;
 		} else {
 			pool.submit(
 				() -> {
@@ -69,11 +80,25 @@ public class StrategoneGame {
 						getBoard().getBoardModel().performMove(move);
 						System.out.println(getBoard().getBoardModel());
 						getBoard().getBoardView().updateBoardView();
-						if (isGameOver(getBoard())) {
+						if (isGameOver()) {
 							System.out.println("Computer player won");
 							setAdversaryToMove(
 								getAdversaryToMove().getOpponent()
 							);
+							/////////////////////////////////////////////////////////////////////
+							int result = JOptionPane.showConfirmDialog(
+								null,
+								"Computer player won.\nStart new game?",
+								"Select an option",
+								JOptionPane.OK_CANCEL_OPTION
+							);
+							if (result == JOptionPane.OK_OPTION) {
+								StrategoneGameView.restart(
+									(java.awt.CardLayout) this.getStrategoneGameView().getLayout(),
+									this.getStrategoneGameView()
+								);
+							}
+							/////////////////////////////////////////////////////////////////////
 							return;
 						}
 						setAdversaryToMove(
@@ -134,8 +159,9 @@ public class StrategoneGame {
 		getBoard().getBoardView().setSplashPieceView(pv);
 		getBoard().getBoardView().chargeSplashEndTimer();
 	}
-	public boolean isGameOver(Board bm) {
-		return bluePlayer.hasLost(bm.getBoardModel()) || redPlayer.hasLost(bm.getBoardModel());
+	public boolean isGameOver() {
+		return this.bluePlayer.hasLost(this.getBoard().getBoardModel())
+			|| this.redPlayer.hasLost(this.getBoard().getBoardModel());
 	}
 	public IAdversary getComputerAdversary() {
 		return this.computerAdversary;
