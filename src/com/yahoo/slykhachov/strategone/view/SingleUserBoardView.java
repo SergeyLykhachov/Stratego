@@ -8,13 +8,13 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.event.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.io.File;
 import java.util.function.Function;
 import java.util.stream.Stream;
+import javax.swing.DefaultListModel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import javax.imageio.ImageIO;
@@ -31,6 +31,9 @@ import static java.util.stream.Collectors.*;
 
 public class SingleUserBoardView extends JPanel {
 	private static final long serialVersionUID = 1L;
+	/////////////////////////////////////////////////////////////
+	private DefaultListModel<String> listModel;
+	//////////////////////////////////////////////////////////////
 	private StrategoneGame strategoneGame;
 	private BoardModel boardModel;
 	private HashMap<String, PieceView> views;
@@ -272,6 +275,12 @@ public class SingleUserBoardView extends JPanel {
 	public BoardModel getBoardModel() {
 		return this.boardModel;
 	}
+	public void setListModel(DefaultListModel<String> listModel) {
+		this.listModel = listModel;
+	}
+	public javax.swing.DefaultListModel getListModel() {
+		return this.listModel;
+	}
 	private class BoardViewMouseListener implements MouseMotionListener, MouseListener {	
 		private IPieceModel pieceModel;
 		@Override
@@ -329,7 +338,14 @@ public class SingleUserBoardView extends JPanel {
 					getStrategoneGame().setAdversaryToMove(
 						adversaryToMove.getOpponent()
 					);
-					actedUponPieceView = null;	
+					actedUponPieceView = null;
+					///////////////////////////////////////////////////////////
+					if (listModel != null) {
+						String s = getBoardModel().getNumberOfMovesPerformed()
+							+ ".  " + candidateMove.toDisplayableString();
+						listModel.addElement(s);
+					}
+					/////////////////////////////////////////////////////////////
 					updateBoardView();
 				} else {			
 					actedUponPieceView.getPoint()

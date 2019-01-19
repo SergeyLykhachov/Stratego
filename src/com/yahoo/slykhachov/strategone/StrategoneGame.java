@@ -14,6 +14,7 @@ import com.yahoo.slykhachov.strategone.view.StrategoneGameView;
 
 public class StrategoneGame {
 	public static int SEARCH_DEPTH = 7;
+	private javax.swing.DefaultListModel<String> listModel;
 	private StrategoneGameModel strategoneGameModel;
 	private StrategoneGameView strategoneGameView;
 	private Board board;
@@ -53,7 +54,8 @@ public class StrategoneGame {
 			if (result == JOptionPane.OK_OPTION) {
 				StrategoneGameView.restart(
 					(java.awt.CardLayout) this.getStrategoneGameView().getLayout(),
-					this.getStrategoneGameView()
+					this.getStrategoneGameView(),
+					this.listModel
 				);
 			}
 			return;
@@ -80,6 +82,10 @@ public class StrategoneGame {
 						getBoard().getBoardModel().performMove(move);
 						System.out.println(getBoard().getBoardModel());
 						getBoard().getBoardView().updateBoardView();
+						if (this.listModel != null) {
+							String s = getBoard().getBoardModel().getNumberOfMovesPerformed() + ".  " + move.toDisplayableString();
+							listModel.addElement(s);
+						}
 						if (isGameOver()) {
 							System.out.println("Computer player won");
 							setAdversaryToMove(
@@ -94,7 +100,8 @@ public class StrategoneGame {
 							if (result == JOptionPane.OK_OPTION) {
 								StrategoneGameView.restart(
 									(java.awt.CardLayout) this.getStrategoneGameView().getLayout(),
-									this.getStrategoneGameView()
+									this.getStrategoneGameView(),
+									this.listModel
 								);
 							}
 							return;
@@ -160,6 +167,12 @@ public class StrategoneGame {
 	public boolean isGameOver() {
 		return this.bluePlayer.hasLost(this.getBoard().getBoardModel())
 			|| this.redPlayer.hasLost(this.getBoard().getBoardModel());
+	}
+	public void setListModel(javax.swing.DefaultListModel<String> listModel) {
+		this.listModel = listModel;
+	}
+	public javax.swing.DefaultListModel getListModel() {
+		return this.listModel;
 	}
 	public IAdversary getComputerAdversary() {
 		return this.computerAdversary;

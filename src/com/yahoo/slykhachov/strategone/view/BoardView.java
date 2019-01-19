@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Stream;
+import javax.swing.DefaultListModel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import javax.swing.border.BevelBorder;
@@ -28,6 +29,9 @@ import static java.util.stream.Collectors.*;
 
 public class BoardView extends JPanel {
 	private static final long serialVersionUID = 1L;
+	/////////////////////////////////////////////////////////////
+	private DefaultListModel<String> listModel;
+	//////////////////////////////////////////////////////////////
 	private StrategoneGame strategoneGame;
 	private BoardModel boardModel;
 	private Map<String, PieceView> views;
@@ -297,6 +301,12 @@ public class BoardView extends JPanel {
 	public void chargeSplashEndTimer() {
 		this.splashEndTimer.start();
 	}
+	public void setListModel(DefaultListModel<String> listModel) {
+		this.listModel = listModel;
+	}
+	public javax.swing.DefaultListModel getListModel() {
+		return this.listModel;
+	}
 	private class BoardViewMouseListener implements MouseMotionListener, MouseListener {	
 		private IPieceModel pieceModel;
 		@Override
@@ -361,7 +371,14 @@ public class BoardView extends JPanel {
 					getStrategoneGame().setAdversaryToMove(
 						adversaryToMove.getOpponent()
 					);
-					actedUponPieceView = null;	
+					actedUponPieceView = null;
+					///////////////////////////////////////////////////////////
+					if (listModel != null) {
+						String s = getBoardModel().getNumberOfMovesPerformed()
+							+ ".  " + candidateMove.toDisplayableString();
+						listModel.addElement(s);
+					}
+					/////////////////////////////////////////////////////////////
 					updateBoardView();
 					getStrategoneGame().doResponce();
 				} else {			
