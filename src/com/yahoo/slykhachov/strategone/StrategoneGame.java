@@ -39,7 +39,7 @@ public class StrategoneGame {
 			if (getBluePlayer().hasLost(getBoard().getBoardModel())) {
 				side = "You";
 			} else {
-				side = "Computer player";
+				side = "Computer";
 			}
 			System.out.println(side + " won");
 			setAdversaryToMove(
@@ -58,7 +58,6 @@ public class StrategoneGame {
 					this.listModel
 				);
 			}
-			return;
 		} else {
 			pool.submit(
 				() -> {
@@ -83,7 +82,8 @@ public class StrategoneGame {
 						System.out.println(getBoard().getBoardModel());
 						getBoard().getBoardView().updateBoardView();
 						if (this.listModel != null) {
-							String s = getBoard().getBoardModel().getNumberOfMovesPerformed() + ".  " + move.toDisplayableString();
+							String s = getBoard().getBoardModel()
+								.getNumberOfMovesPerformed() + ".  " + move.toDisplayableString();
 							listModel.addElement(s);
 						}
 						if (isGameOver()) {

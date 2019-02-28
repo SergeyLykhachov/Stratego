@@ -29,9 +29,7 @@ import static java.util.stream.Collectors.*;
 
 public class BoardView extends JPanel {
 	private static final long serialVersionUID = 1L;
-	/////////////////////////////////////////////////////////////
 	private DefaultListModel<String> listModel;
-	//////////////////////////////////////////////////////////////
 	private StrategoneGame strategoneGame;
 	private BoardModel boardModel;
 	private Map<String, PieceView> views;

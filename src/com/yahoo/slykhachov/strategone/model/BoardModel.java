@@ -56,9 +56,6 @@ public class BoardModel {
 	public boolean isSafeToUndoOneMove() {
 		return this.stack.size() >= 1;
 	}
-	//public boolean isSafeToUndoTwoMoves() {
-	//	return this.stack.size() >= 2;
-	//}
 	public int getNumberOfMovesPerformed() {
 		return this.stack.size();
 	}

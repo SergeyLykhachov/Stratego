@@ -92,7 +92,7 @@ public class GameSetupView extends JPanel
 				long pieceCount = Stream.of(humanPlayerPieces)
 					.filter(e -> e != null)
 					.count();
-				if (pieceCount == 40) {	
+				if (pieceCount == 40) {
 					gameView.getStrategoneGame().getRedPlayer()
 						.setPieces(humanPlayerPieces);
 					gameView.getStrategoneGame().getBluePlayer()
@@ -121,7 +121,8 @@ public class GameSetupView extends JPanel
 	}
 	private static IPieceModel[] hardCodedRedPieceModelsFactory() {
 		return new IPieceModel[] {
-			new Flag(9, 1, Red.class),
+			//new Flag(9, 1, Red.class),
+			new Flag(6, 5, Red.class),//
 			new Bomb(6, 1, Red.class),
 			new Bomb(6, 9, Red.class),
 			new Bomb(7, 0, Red.class),
@@ -153,7 +154,8 @@ public class GameSetupView extends JPanel
 			new Miner(8, 7, Red.class),
 			new Miner(9, 9, Red.class),
 			new Scout(6, 4, Red.class),
-			new Scout(6, 5, Red.class),
+			//new Scout(6, 5, Red.class),
+			new Scout(9, 1, Red.class),//
 			new Scout(6, 8, Red.class),
 			new Scout(7, 2, Red.class),
 			new Scout(7, 9, Red.class),

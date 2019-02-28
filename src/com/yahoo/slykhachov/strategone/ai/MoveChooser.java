@@ -100,8 +100,7 @@ public class MoveChooser {
 				Future<Best> future = MoveChooser.pool.submit(callable);
 				return future;
 			} else {
-				List<Move> moves = newAlternatingAdversary
-					.generateAllPossibleMoves(boardCopy);
+				List<Move> moves = newAlternatingAdversary.generateAllPossibleMoves(boardCopy);
 				List<Callable<Best>> tasks = new ArrayList<>();
 				for (Move move : moves) {
 					tasks.add(
@@ -169,18 +168,6 @@ public class MoveChooser {
 		}
 		return maxFuture;
 	}
-/*
-	TOP LEVEL METHOD INVOCATION
-		miniMaxAlphaBeta(
-				MoveChooser.MAXIMIZER,
-				adversary,
-				adversary,
-				board,
-				Integer.MIN_VALUE, 
-				Integer.MAX_VALUE,
-				depth
-		);
-*/
 	public static Best miniMaxAlphaBeta(boolean side, IAdversary adversary,
 			IAdversary alternatingAdversary, BoardModel board, int alpha, int beta,
 			int depth) {
@@ -249,7 +236,8 @@ public class MoveChooser {
 			bModel.undoMove();
 		}
 		int indexOfMax = 0;
-		for (int i = 0; i < Math.min(5, scores.length); i++) {
+		int numberOfBest = Math.min(5, scores.length);
+		for (int i = 0; i < numberOfBest; i++) {
 			int max = Integer.MIN_VALUE;
 			int currentIterationIndexOfMax = 0;
 			for (int j = indexOfMax; j < scores.length; j++) {
