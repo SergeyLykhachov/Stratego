@@ -44,9 +44,7 @@ public class MoveChooser {
 			Best best = null;
 			try {
 				best = bestFuture.get();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} catch (ExecutionException e) {
+			} catch (InterruptedException | ExecutionException e) {
 				e.printStackTrace();
 			}
 			return best;
@@ -118,9 +116,7 @@ public class MoveChooser {
 							try {
 								best = future.get();
 								best.setMove(move);
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							} catch (ExecutionException e) {
+							} catch (InterruptedException | ExecutionException e) {
 								e.printStackTrace();
 							}
 							return best;					
@@ -146,21 +142,17 @@ public class MoveChooser {
 		int maxScore = 0;
 		try {
 			maxScore = maxFuture.get().getScore();
-		} catch (InterruptedException e) {
+		} catch (InterruptedException | ExecutionException e) {
 		    e.printStackTrace();
-		} catch (ExecutionException e) {
-	    	e.printStackTrace();
-	    }
+		}
 		for (int i = 1; i < list.size(); i++) {
 			Future<Best> currentFuture = list.get(i);
 			int currentScore = 0;
 			try {
 				currentScore = currentFuture.get().getScore();
-			} catch (InterruptedException e) {
+			} catch (InterruptedException | ExecutionException e) {
 		        e.printStackTrace();
-			} catch (ExecutionException e) {
-	    	    e.printStackTrace();
-	    	}
+			}
 			if (comparator.compare(currentScore, maxScore) > 0) {
 				maxScore = currentScore;
 				maxFuture = currentFuture;
